@@ -1,3 +1,4 @@
+Attribute VB_Name = "mdlFiles"
 Option Explicit
 '''
 '   FILES METHODS.
@@ -134,15 +135,6 @@ Public Function toBase64(ByVal filePath As String) As String
     Set streamInput = Nothing
     Set xmlDoc = Nothing
     Set xmlElem = Nothing
-End Function
-
-'''
-'   Closes the FSO.
-'''
-Public Function closeFSO() As Boolean
-    Dim FSO As Object
-    Set FSO = getFSO
-    Set FSO = Nothing
 End Function
 
 
