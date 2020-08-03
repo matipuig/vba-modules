@@ -8,9 +8,9 @@ Option Explicit
 '''
 '   Returns the cell address. For example cell(1,1) will return "A1"
 '''
-Public Function convertToRange(ByRef xlSheet As Object, ByVal rowNumber As Long, ByVal columnNumber As Long) As String
+Public Function convertToRange(ByRef xlSheet As Object, ByVal rowNumber As Long, ByVal columnNumber As Long, Optional ByVal absoluteRow As Boolean = False, Optional ByVal absoluteColumn As Boolean = False) As String
     Dim cell As Object: Set cell = xlSheet.Cells(rowNumber, columnNumber)
-    convertToRange = cell.Address(ColumnAbsolute:=False, RowAbsolute:=False)
+    convertToRange = cell.Address(ColumnAbsolute:=absoluteColumn, RowAbsolute:=absoluteRow)
 End Function
 
 '''
