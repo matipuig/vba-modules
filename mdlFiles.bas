@@ -113,6 +113,17 @@ Public Function getExtension(ByVal filePath As String) As String
 End Function
 
 '''
+'   Deletes a file.
+'''
+Public Function deleteFile(ByVal filePath As String) As Boolean
+   If fileExists(filePath) Then
+      SetAttr filePath, vbNormal
+      Kill filePath
+   End If
+   deleteFile = True
+End Function
+
+'''
 '   Converts a file to Base64.
 '''
 Public Function toBase64(ByVal filePath As String) As String
@@ -130,7 +141,7 @@ Public Function toBase64(ByVal filePath As String) As String
     streamInput.LoadFromFile filePath
     xmlElem.DataType = "bin.base64"
     xmlElem.nodeTypedValue = streamInput.Read
-    toBase64 = Replace(xmlElem.text, vbLf, "")
+    toBase64 = replace(xmlElem.Text, vbLf, "")
     
     Set streamInput = Nothing
     Set xmlDoc = Nothing
@@ -192,6 +203,7 @@ Private Function getXMLDOM() As Object
     End If
     Set getXMLDOM = XMLDOM
 End Function
+
 
 
 

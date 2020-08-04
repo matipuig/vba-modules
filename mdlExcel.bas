@@ -6,6 +6,18 @@ Option Explicit
 '''
 
 '''
+'   Opens an Excel App and return its reference.
+'''
+Public Function getExcelApp(Optional ByVal visible As Boolean = False) As Object
+    Static excelApp As Object
+    If isApplication(excelApp) = False Then
+        Set excelApp = CreateObject("Excel.Application")
+        excelApp.visible = visible
+    End If
+    Set getExcelApp = excelApp
+End Function
+
+'''
 '   Returns the cell address. For example cell(1,1) will return "A1"
 '''
 Public Function convertToRange(ByRef xlSheet As Object, ByVal rowNumber As Long, ByVal columnNumber As Long, Optional ByVal absoluteRow As Boolean = False, Optional ByVal absoluteColumn As Boolean = False) As String
@@ -44,7 +56,7 @@ Public Function searchInColumn(ByRef xlSheet As Object, ByVal searchedValue As S
         Exit Function
     End If
     
-    searchInColumn = xlSheet.range(foundRange).Row
+    searchInColumn = xlSheet.range(foundRange).row
 End Function
 
 
@@ -74,4 +86,37 @@ Public Function getNextEmptyRow(ByRef xlSheet As Object, ByVal column As Long, B
     Loop
 End Function
 
+'''
+'   Closes the excel app.
+'''
+Public Function closeApp() As Boolean
+    Dim excelApp As Object: Set excelApp = getExcelApp
+    If isApplication(excelApp) = False Then
+        closeApp = True
+        Exit Function
+    End If
+        
+    Dim wb
+    For Each wb In excelApp.Workbooks
+        wb.Close SaveChanges:=False
+    Next wb
+    excelApp.Quit
+    Set excelApp = Nothing
+    closeApp = True
+End Function
 
+
+'
+'
+'   PRIVATE METHODS
+'
+'
+'''
+'   Checks if is open.
+'''
+Private Function isApplication(ByRef object) As Boolean
+    isApplication = False
+    If Information.TypeName(object) = "Application" Then
+        isApplication = True
+    End If
+End Function
