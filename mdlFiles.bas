@@ -142,7 +142,8 @@ Public Function toBase64(ByVal filePath As String) As String
     xmlElem.DataType = "bin.base64"
     xmlElem.nodeTypedValue = streamInput.Read
     toBase64 = replace(xmlElem.Text, vbLf, "")
-    
+    streamInput.Close
+
     Set streamInput = Nothing
     Set xmlDoc = Nothing
     Set xmlElem = Nothing

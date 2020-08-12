@@ -46,10 +46,10 @@ Public Function request(ByVal url As String, ByVal method As String, ByVal body 
 
     xmlHTTP.send (body)
     DoEvents
-    Do While xmlHTTP.readystate <> 4
+    Do While xmlHTTP.readyState <> 4
         DoEvents
     Loop
-    request = xmlHTTP.responsetext
+    request = xmlHTTP.responseText
     Set xmlHTTP = Nothing
 End Function
 
@@ -60,20 +60,15 @@ End Function
 '''
 Public Function urlEncodeDictionary(ByRef dictionary as Object) as String
     Dim I as Integer
-    Dim tmpValue As String 
+    Dim tmpKey as String
+    Dim tmpValue as string 
+    Dim tmpKeyValue As String 
     For I = 0 To dictionary.Count - 1
-        tmpValue = urlEncodeKeyAndValue(dictionary.keys()(I), dictionary.items()(I))
-        urlEncodeDictionary = urlEncodeDictionary & tmpValue
+        tmpKey = urlEncode(dictionary.keys()(I))
+        tmpValue = urlEncode(dictionary.items()(I))
+        tmpKeyValue = "&" & tmpKey & "=" & tmpValue
+        urlEncodeDictionary = urlEncodeDictionary & tmpKeyValue
     Next I
-End Function
-
-'''
-'   Encodes a key value pair: key = value to "&key=value".
-'''
-Public Function urlEncodeKeyAndValue(ByVal key As String, ByVal value As String) As String
-    key = urlEncode(key)
-    value = urlEncode(value)
-    urlEncodeKeyAndValue = "&" & key & "=" & value
 End Function
 
 '''

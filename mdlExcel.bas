@@ -40,10 +40,8 @@ Public Function search(ByRef xlSheet As Object, ByVal range As String, ByVal val
 End Function
 
 '''
-'   UBICAR FILA CON EL CONTENIDO
-'   Revisa la columna en los intervalos especificados y devuelve el n?mero de fila en la cual est? el contenido.
-'   Si no lo encuentra, devuelve -1.
-'   Puede simplify los contenidos, lo cual quiere decir que search? con trim, y minimizando.
+'   Looks for a specific content in an entire column.
+'   Returns the row number if it finds it, or -1.
 '''
 Public Function searchInColumn(ByRef xlSheet As Object, ByVal searchedValue As String, ByVal column As Long, ByVal startingRow As Long, ByVal endingRow As Long, Optional ByVal matchCase As Boolean = False) As Long
     Dim startingRange As String: startingRange = convertToRange(xlSheet, startingRow, column)

@@ -10,7 +10,7 @@ Option Explicit
 '''
 '   Opens the app and returns the object.
 '''
-Private Function getAcroApp() As Object
+Public Function getAcroApp() As Object
     Static acroApp As Object
     If acroApp Is Nothing Then
         Set acroApp = CreateObject("AcroExch.App")
