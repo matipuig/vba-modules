@@ -29,7 +29,7 @@ Public Function request(ByVal url As String, ByVal method As String, ByVal body 
     If addNonce = True Then
         Randomize
         Dim nonce As Single: nonce = Rnd(50000) * 40000
-        If InStr(url, "?") < 1 Then url = url & "?"
+        If Strings.InStr(url, "?") < 1 Then url = url & "?"
         url = url & "&nonce" & nonce & "=" & nonce
     End If
     
