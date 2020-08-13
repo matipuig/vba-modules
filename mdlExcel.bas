@@ -23,6 +23,7 @@ End Function
 Public Function convertToRange(ByRef xlSheet As Object, ByVal rowNumber As Long, ByVal columnNumber As Long, Optional ByVal absoluteRow As Boolean = False, Optional ByVal absoluteColumn As Boolean = False) As String
     Dim cell As Object: Set cell = xlSheet.Cells(rowNumber, columnNumber)
     convertToRange = cell.Address(ColumnAbsolute:=absoluteColumn, RowAbsolute:=absoluteRow)
+    Set cell = Nothing
 End Function
 
 '''
@@ -37,6 +38,7 @@ Public Function search(ByRef xlSheet As Object, ByVal range As String, ByVal val
         Exit Function
     End If
     search = foundRange.Address(ColumnAbsolute:=False, RowAbsolute:=False)
+    Set foundRange = Nothing
 End Function
 
 '''

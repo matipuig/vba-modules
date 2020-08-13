@@ -41,6 +41,7 @@ End Function
 Public Function folderExists(ByVal folder As String) As Boolean
     Dim FSO As Object: Set FSO = getFSO
     folderExists = FSO.folderExists(folder)
+    Set FSO = Nothing
 End Function
 
 '''
@@ -49,6 +50,7 @@ End Function
 Public Function fileExists(ByVal file As String) As Boolean
     Dim FSO As Object: Set FSO = getFSO
     fileExists = FSO.fileExists(file)
+    Set FSO = Nothing
 End Function
 
 '''

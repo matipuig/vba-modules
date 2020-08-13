@@ -30,6 +30,7 @@ Public Function getContent(ByVal filePath As String, Optional ByVal closeAppAtEn
     wordDoc.Close
     Set wordDoc = Nothing
     If closeAppAtEnding = True Then closeApp
+    Set wordAPP = Nothing
 End Function
 
 '''
