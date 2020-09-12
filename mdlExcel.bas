@@ -131,6 +131,33 @@ Public Function getNextEmptyColumn(ByRef xlSheet As Object, ByVal row As Long, B
 End Function
 
 '''
+'   Creates a dictionary containing each column text in the row and the column number.
+'   Example: Dictionary: {header1: 1, header2: 2, header3: 3, header4: 4, etc.}
+'   Then you can loop through: For I = 0 to Dictionary.count: Msgbox Dictonary.Keys()(I) & " = " & Dictionary.Items()(I) 
+'''
+Public Function rowToDictionary(ByRef xlSheet As Object, ByVal row As Long, ByVal startingCol As Long, ByVal endingcol As Long, Optional ByVal toUpperCase As Boolean = False) As Object
+    If endingcol < startingCol Then
+        Err.Raise 1, , "Ending col should be higher than starting col."
+    End If
+    
+    Dim dictionary As Object: Set dictionary = CreateObject("Scripting.Dictionary")
+    Dim I As Long
+    Dim tmpKey As String
+    For I = startingCol To endingcol
+        tmpKey = Conversion.CStr(xlSheet.Cells(row, I).value)
+        If Strings.Trim(tmpKey) = "" Then
+            GoTo nextCol
+        End If
+        If toUpperCase Then
+            tmpKey = Strings.UCase(tmpKey)
+        End If
+        dictionary(tmpKey) = I
+nextCol:
+    Next I
+    Set rowToDictionary = dictionary
+End Function
+
+'''
 '   Closes the excel app.
 '''
 Public Function closeApp() As Boolean
