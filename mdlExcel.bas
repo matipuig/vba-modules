@@ -59,6 +59,24 @@ Public Function searchInColumn(ByRef xlSheet As Object, ByVal searchedValue As S
     searchInColumn = xlSheet.range(foundRange).row
 End Function
 
+'''
+'   Looks for a specific content in an entire row.
+'   Returns the column number if it finds it, or -1.
+'''
+Public Function searchInRow(ByRef xlSheet As Object, ByVal searchedValue As String, ByVal row As Long, ByVal startingCol As Long, ByVal endingCol As Long, Optional ByVal matchCase As Boolean = False) As Long
+    Dim startingRange As String: startingRange = convertToRange(xlSheet, row, startingCol)
+    Dim endingRange As String: endingRange = convertToRange(xlSheet, row, endingCol)
+    Dim range As String: range = startingRange & ":" & endingRange
+    
+    Dim foundRange As String: foundRange = search(xlSheet, range, searchedValue, matchCase)
+    If foundRange = "" Then
+        searchInRow = -1
+        Exit Function
+    End If
+    
+    searchInRow = xlSheet.range(foundRange).column
+End Function
+
 
 '''
 '   Gets the first empty row in the specified column between the specified rows. If you choose 'trimContent', " " will be interpreted as empty.
@@ -87,6 +105,32 @@ Public Function getNextEmptyRow(ByRef xlSheet As Object, ByVal column As Long, B
 End Function
 
 '''
+'   Gets the first empty column in the specified column between the specified rows. If you choose 'trimContent', " " will be interpreted as empty.
+'   If it cannot find one, returns -1.
+'''
+Public Function getNextEmptyColumn(ByRef xlSheet As Object, ByVal row As Long, ByVal startingCol As Long, ByVal endingCol As Long, Optional ByVal trimContent As Boolean = True) As Long
+    If endingCol < startingCol Then
+        Err.Raise 1, , "Ending col should be higher than starting col."
+    End If
+    
+    getNextEmptyColumn = -1
+    Dim actualCol As Long: actualCol = startingCol
+    Dim tmpContent As String
+
+    Do While actualCol <= endingCol
+        tmpContent = xlSheet.Cells(row, actualCol).value
+        If trimContent = True Then
+            tmpContent = Strings.Trim(tmpContent)
+        End If
+        If tmpContent = "" Then
+            getNextEmptyColumn = actualCol
+            Exit Function
+        End If
+        actualCol = actualCol + 1
+    Loop
+End Function
+
+'''
 '   Closes the excel app.
 '''
 Public Function closeApp() As Boolean
@@ -111,6 +155,7 @@ End Function
 '   PRIVATE METHODS
 '
 '
+
 '''
 '   Checks if is open.
 '''
