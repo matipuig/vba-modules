@@ -25,17 +25,6 @@ Public Function getRandomNumber(ByVal min As Single, ByVal max As Single, Option
 End Function
 
 '''
-'   Returns if the source text has the subtext.
-'''
-Public Function hasSubtext(ByVal originalText As String, ByVal searchedSubtext As String, Optional ByVal matchCase As Boolean = False) As Boolean
-    If matchCase = False Then
-        originalText = Strings.LCase(originalText)
-        searchedSubtext = Strings.LCase(searchedSubtext)
-    End If
-    hasSubtext = Strings.InStr(originalText, searchedSubtext) > 0
-End Function
-
-'''
 '   Wait the specified seconds.
 '''
 Public Function waitSeconds(ByVal seconds As Long) As Boolean
