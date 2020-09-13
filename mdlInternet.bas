@@ -6,17 +6,6 @@ Option Explicit
 '''
 
 '''
-'   Creates and return an XMLHTTP Object for requests.
-'''
-Private Function getXMLHTTP() As Object
-    Static xmlHTTP As Object
-    If xmlHTTP Is Nothing Then
-        Set xmlHTTP = CreateObject("MSXML2.XMLHTTP.6.0")
-    End If
-    Set getXMLHTTP = xmlHTTP
-End Function
-
-'''
 '   Executes an HTTP Request.
 '   Nonce is in order to prevent cache.
 '   Headers should be a dictionary.
@@ -90,6 +79,17 @@ End Function
 '   PRIVATE METHODS.
 '
 '''
+
+'''
+'   Creates and return an XMLHTTP Object for requests.
+'''
+Private Function getXMLHTTP() As Object
+    Static xmlHTTP As Object
+    If xmlHTTP Is Nothing Then
+        Set xmlHTTP = CreateObject("MSXML2.XMLHTTP.6.0")
+    End If
+    Set getXMLHTTP = xmlHTTP
+End Function
 
 '''
 '   Gets the HTML file and its reference.

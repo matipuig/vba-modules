@@ -162,7 +162,7 @@ End Function
 '   Show the OpenFileDialog modal box.
 '   Returns the specifed fileor "".
 '''
-Public Function openDialog(ByVal dialogType As Single, ByVal title As String) As String
+Private Function openDialog(ByVal dialogType As Single, ByVal title As String) As String
     Dim dialogBox As FileDialog
     Dim selection As String: selection = ""
         
