@@ -107,7 +107,7 @@ Public Function getExtension(ByVal filePath As String) As String
     getExtension = ""
     Dim fileName As String: fileName = getFileName(filePath)
     Dim arrName: arrName = Strings.Split(fileName, ".")
-    If IsEmpty(arrName) Then Exit Function
+    If Information.IsEmpty(arrName) Then Exit Function
     Dim lastIndex: lastIndex = UBound(arrName)
     If lastIndex = 0 Then Exit Function
     Dim extension As String: extension = arrName(lastIndex)
