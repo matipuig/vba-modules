@@ -131,19 +131,40 @@ Public Function getNextEmptyColumn(ByRef xlSheet As Object, ByVal row As Long, B
 End Function
 
 '''
-'   Creates a dictionary containing each column text in the row and the column number.
-'   Example: Dictionary: {header1: 1, header2: 2, header3: 3, header4: 4, etc.}
-'   Then you can loop through: For I = 0 to Dictionary.count: Msgbox Dictonary.Keys()(I) & " = " & Dictionary.Items()(I) 
+'   Creates a collection from the row.
+'   Example: ["cell1", "cell2", "cell3", ...]
 '''
-Public Function rowToDictionary(ByRef xlSheet As Object, ByVal row As Long, ByVal startingCol As Long, ByVal endingcol As Long, Optional ByVal toUpperCase As Boolean = False) As Object
-    If endingcol < startingCol Then
+Public Function rowToCollection(ByRef xlSheet As Object, ByVal row As Long, ByVal startingCol As Long, ByVal endingCol As Long, Optional ByVal toUpperCase As Boolean = False) As Object
+    If endingCol < startingCol Then
+        Err.Raise 1, , "Ending col should be higher than starting col."
+    End If
+    
+    Set rowToCollection = New Collection
+    Dim I As Long
+    Dim tmpKey As String
+    For I = startingCol To endingCol
+        tmpKey = Conversion.CStr(xlSheet.Cells(row, I).value)
+        If toUpperCase Then
+            tmpKey = Strings.UCase(tmpKey)
+        End If
+        rowToCollection.Add tmpKey
+    Next I
+End Function
+
+'''
+'   Creates a dictionary containing each column text in the row and the column number.
+'   Example: Dictionary: {value1: 1, value2: 2, value3: 3, value4: 4, etc.}
+'   Then you can loop through: For I = 0 to Dictionary.count: Msgbox Dictonary.Keys()(I) & " = " & Dictionary.Items()(I)
+'''
+Public Function rowToIndexDictionary(ByRef xlSheet As Object, ByVal row As Long, ByVal startingCol As Long, ByVal endingCol As Long, Optional ByVal toUpperCase As Boolean = False) As Object
+    If endingCol < startingCol Then
         Err.Raise 1, , "Ending col should be higher than starting col."
     End If
     
     Dim dictionary As Object: Set dictionary = CreateObject("Scripting.Dictionary")
     Dim I As Long
     Dim tmpKey As String
-    For I = startingCol To endingcol
+    For I = startingCol To endingCol
         tmpKey = Conversion.CStr(xlSheet.Cells(row, I).value)
         If Strings.Trim(tmpKey) = "" Then
             GoTo nextCol
@@ -159,29 +180,43 @@ End Function
 
 '''
 '   Creates a collection of dictionaries of the specified sheet area, using the first row as headers and creating a new collection dictionary item per row.
-'   Example: [Dictionary: {header1: "Value 1", header2: "value 2", header3: "Value 3"}, ...]
-'   Headers are taken from the first row. 
+'   Headers are taken from the first row.
+'   Example: [Dictionary (row 2): {header1: "Value 1", header2: "value 2", header3: "Value 3"}, Dictionary (row 3), Dictionary (row 4)...]
 '''
-Public Function rowToDictionary(ByRef xlSheet As Object, ByVal row As Long, ByVal startingCol As Long, ByVal endingcol As Long, Optional ByVal toUpperCase As Boolean = False) As Object
-    If endingcol < startingCol Then
+Public Function sheetToDictionaryCollection(ByRef xlSheet As Object, ByVal startingRow As Long, ByVal endingRow As Long, ByVal startingCol As Long, ByVal endingCol As Long, Optional ByVal headersToUpperCase As Boolean = False) As Collection
+    If endingRow < startingRow Then
+        Err.Raise 1, , "Ending row should be higher than starting row."
+    End If
+    If endingCol < startingCol Then
         Err.Raise 1, , "Ending col should be higher than starting col."
     End If
+      
+    Set sheetToDictionaryCollection = New Collection
+      
+    Dim firstContentRow As Double: firstContentRow = startingRow + 1
+    If firstContentRow > endingRow Then
+        Exit Function
+    End If
     
-    Dim dictionary As Object: Set dictionary = CreateObject("Scripting.Dictionary")
-    Dim I As Long
-    Dim tmpKey As String
-    For I = startingCol To endingcol
-        tmpKey = Conversion.CStr(xlSheet.Cells(row, I).value)
-        If Strings.Trim(tmpKey) = "" Then
-            GoTo nextCol
-        End If
-        If toUpperCase Then
-            tmpKey = Strings.UCase(tmpKey)
-        End If
-        dictionary(tmpKey) = I
-nextCol:
+    Dim headers As Collection: Set headers = rowToCollection(xlSheet, startingRow, startingCol, endingCol, headersToUpperCase)
+    Dim I As Double
+    Dim J As Double
+    Dim header As String
+    Dim rowDictionary As Object
+    For I = firstContentRow To endingRow
+        Set rowDictionary = CreateObject("Scripting.Dictionary")
+        
+        For J = startingCol To endingCol
+            header = headers(J - startingCol + 1)
+            rowDictionary.Add header, xlSheet.Cells(I, J).value
+            DoEvents
+        Next J
+        
+        sheetToDictionaryCollection.Add rowDictionary
+        DoEvents
     Next I
-    Set rowToDictionary = dictionary
+    
+    Set rowDictionary = Nothing
 End Function
 
 
@@ -220,3 +255,4 @@ Private Function isApplication(ByRef object) As Boolean
         isApplication = True
     End If
 End Function
+

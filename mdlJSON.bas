@@ -77,9 +77,12 @@ Private Function dictionaryToJSON(ByRef something As Variant) As String
     Dim tmpKeyValue As String
     Dim dictionary As Object: Set dictionary = something
     Dim dictionaryCount As Single: dictionaryCount = dictionary.Count - 1
+    Dim dictKeys As Variant: dictKeys = dictionary.keys()
+    Dim dictItems As Variant: dictItems = dictionary.items()
+    
     For I = 0 To dictionaryCount
-        tmpKey = escapeString(dictionary.keys()(I))
-        tmpValue = stringify(dictionary.items()(I))
+        tmpKey = escapeString(dictKeys(I))
+        tmpValue = stringify(dictItems(I))
         tmpKeyValue = tmpKey & ":" & tmpValue
         If I < dictionaryCount Then
             tmpKeyValue = tmpKeyValue & ","
