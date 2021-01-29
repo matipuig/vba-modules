@@ -4,38 +4,28 @@ Const QUOTES As String = """"
 Const ESCAPED_QUOTES As String = "\" & QUOTES
 
 '''
-'   Escapes the string to return
+'   Converts the specified received thing in a JSON string.
 '''
-Private Function escapeString(ByVal text As String) As String
-    Dim escapedString As String: escapedString = Replace(text, QUOTES, ESCAPED_QUOTES)
-    escapeString = QUOTES & escapedString & QUOTES
+Public Function stringify(ByRef something As Variant) As String
+    Dim someType As Variant: someType = Information.VarType(something)
+    
+    If Information.IsArray(something) Then
+        stringify = arrayToJSON(something)
+    
+    ElseIf Information.TypeName(something) = "Dictionary" Then
+        stringify = dictionaryToJSON(something)
+    
+    ElseIf Information.TypeName(something) = "Collection" Then
+        stringify = collectionToJSON(something)
+    
+    Else
+        stringify = convertSimpleTypeToJSON(something)
+    End If
 End Function
 
 '''
-'   Converts simple types (string, number, null and boolean) to JSON.
+'   PRIVATE FUNCTIONS
 '''
-Private Function convertSimpleTypeToJSON(ByRef something As Variant) As String
-    If Information.VarType(something) = vbString Then
-        convertSimpleTypeToJSON = escapeString(something)
-        Exit Function
-    
-    ElseIf something = True Then
-        convertSimpleTypeToJSON = "true"
-        Exit Function
-    ElseIf something = False Then
-        convertSimpleTypeToJSON = "false"
-        Exit Function
-    
-    ElseIf Information.IsNumeric(something) Then
-        convertSimpleTypeToJSON = something
-        Exit Function
-        
-    ElseIf Information.IsNull(something) Then
-        convertSimpleTypeToJSON = "null"
-        Exit Function
-    End If
-    Err.Raise "Type not accepted for JSON."
-End Function
 
 '''
 '   Converts an array to JSON.
@@ -100,29 +90,40 @@ Private Function dictionaryToJSON(ByRef something As Variant) As String
 End Function
 
 '''
-'   Converts the specified received thing in a JSON string.
+'   Converts simple types (string, number, null and boolean) to JSON.
 '''
-Public Function stringify(ByRef something As Variant) As String
-    Dim someType As Variant: someType = Information.VarType(something)
-    
-    If someType = vbBoolean Or someType = vbString Or Information.IsNumeric(something) Or Information.IsNull(something) Then
-        stringify = convertSimpleTypeToJSON(something)
+Private Function convertSimpleTypeToJSON(ByRef something As Variant) As String
+    If Information.VarType(something) = vbString Then
+        convertSimpleTypeToJSON = escapeString(something)
         Exit Function
-               
-    ElseIf Information.IsArray(something) Then
-        stringify = arrayToJSON(something)
+    
+    ElseIf something = True Then
+        convertSimpleTypeToJSON = "true"
+        Exit Function
+    ElseIf something = False Then
+        convertSimpleTypeToJSON = "false"
+        Exit Function
+    
+    ElseIf Information.IsNumeric(something) Then
+        convertSimpleTypeToJSON = something
         Exit Function
         
-    ElseIf Information.TypeName(something) = "Dictionary" Then
-        stringify = dictionaryToJSON(something)
+    ElseIf Information.IsNull(something) Then
+        convertSimpleTypeToJSON = "null"
         Exit Function
-
-    ElseIf Information.TypeName(something) = "Collection" Then
-        stringify = collectionToJSON(something)
+        
+    ElseIf Information.VarType(something) = vbDate Then
+        convertSimpleTypeToJSON = Format(something, "yyyy-mm-dd hh:mm:ss", vbSunday, vbFirstJan1)
         Exit Function
     End If
     
-    Err.Raise "Type not accepted for JSON."
+    Err.Raise 1, , "Type " & Information.VarType(something) & " not accepted for JSON."
 End Function
 
-
+'''
+'   Escapes the string to return
+'''
+Private Function escapeString(ByVal text As String) As String
+    Dim escapedString As String: escapedString = Replace(text, QUOTES, ESCAPED_QUOTES)
+    escapeString = QUOTES & escapedString & QUOTES
+End Function

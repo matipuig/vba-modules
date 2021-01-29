@@ -158,6 +158,34 @@ nextCol:
 End Function
 
 '''
+'   Creates a collection of dictionaries of the specified sheet area, using the first row as headers and creating a new collection dictionary item per row.
+'   Example: [Dictionary: {header1: "Value 1", header2: "value 2", header3: "Value 3"}, ...]
+'   Headers are taken from the first row. 
+'''
+Public Function rowToDictionary(ByRef xlSheet As Object, ByVal row As Long, ByVal startingCol As Long, ByVal endingcol As Long, Optional ByVal toUpperCase As Boolean = False) As Object
+    If endingcol < startingCol Then
+        Err.Raise 1, , "Ending col should be higher than starting col."
+    End If
+    
+    Dim dictionary As Object: Set dictionary = CreateObject("Scripting.Dictionary")
+    Dim I As Long
+    Dim tmpKey As String
+    For I = startingCol To endingcol
+        tmpKey = Conversion.CStr(xlSheet.Cells(row, I).value)
+        If Strings.Trim(tmpKey) = "" Then
+            GoTo nextCol
+        End If
+        If toUpperCase Then
+            tmpKey = Strings.UCase(tmpKey)
+        End If
+        dictionary(tmpKey) = I
+nextCol:
+    Next I
+    Set rowToDictionary = dictionary
+End Function
+
+
+'''
 '   Closes the excel app.
 '''
 Public Function closeApp() As Boolean
