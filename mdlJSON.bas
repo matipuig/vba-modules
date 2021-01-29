@@ -1,5 +1,4 @@
 Attribute VB_Name = "mdlJSON"
-
 Option Explicit
 Const QUOTES As String = """"
 Const ESCAPED_QUOTES As String = "\" & QUOTES
@@ -51,13 +50,31 @@ Private Function arrayToJSON(ByRef someArray As Variant) As String
         Exit Function
     End If
     For I = LBound(someArray) To arraySize
-        tmpConversion = convertToJSON(someArray(I))
+        tmpConversion = stringify(someArray(I))
         arrayToJSON = arrayToJSON & tmpConversion
         If I < arraySize Then
             arrayToJSON = arrayToJSON & ","
         End If
     Next I
     arrayToJSON = "[" & arrayToJSON & "]"
+End Function
+
+'''
+'   Converts a collection to JSON.
+'''
+Private Function collectionToJSON(ByRef someCollection As Variant) As String
+    Dim I As Double
+    Dim tmpConversion As String
+    Dim collectionSize As Double: collectionSize = someCollection.Count
+
+    For I = 1 To collectionSize
+        tmpConversion = stringify(someCollection(I))
+        collectionToJSON = collectionToJSON & tmpConversion
+        If I < collectionSize Then
+            collectionToJSON = collectionToJSON & ","
+        End If
+    Next I
+    collectionToJSON = "[" & collectionToJSON & "]"
 End Function
 
 '''
@@ -72,7 +89,7 @@ Private Function dictionaryToJSON(ByRef something As Variant) As String
     Dim dictionaryCount As Single: dictionaryCount = dictionary.Count - 1
     For I = 0 To dictionaryCount
         tmpKey = escapeString(dictionary.keys()(I))
-        tmpValue = convertToJSON(dictionary.items()(I))
+        tmpValue = stringify(dictionary.items()(I))
         tmpKeyValue = tmpKey & ":" & tmpValue
         If I < dictionaryCount Then
             tmpKeyValue = tmpKeyValue & ","
@@ -83,22 +100,29 @@ Private Function dictionaryToJSON(ByRef something As Variant) As String
 End Function
 
 '''
-'   Converts the specified received thing in JSON string.
+'   Converts the specified received thing in a JSON string.
 '''
-Public Function convertToJSON(ByRef something As Variant) As String
+Public Function stringify(ByRef something As Variant) As String
     Dim someType As Variant: someType = Information.VarType(something)
     
     If someType = vbBoolean Or someType = vbString Or Information.IsNumeric(something) Or Information.IsNull(something) Then
-        convertToJSON = convertSimpleTypeToJSON(something)
+        stringify = convertSimpleTypeToJSON(something)
         Exit Function
                
     ElseIf Information.IsArray(something) Then
-        convertToJSON = arrayToJSON(something)
+        stringify = arrayToJSON(something)
         Exit Function
         
     ElseIf Information.TypeName(something) = "Dictionary" Then
-        convertToJSON = dictionaryToJSON(something)
+        stringify = dictionaryToJSON(something)
+        Exit Function
+
+    ElseIf Information.TypeName(something) = "Collection" Then
+        stringify = collectionToJSON(something)
         Exit Function
     End If
-        Err.Raise "Type not accepted for JSON."
+    
+    Err.Raise "Type not accepted for JSON."
 End Function
+
+
