@@ -20,13 +20,11 @@ End Function
 '   Get RegExp object.
 '''
 Public Function getRegExp(ByVal pattern As String, ByVal ignoreCase As Boolean, ByVal globalRegex As Boolean, ByVal multiLine As Boolean) As Object
-    Dim RegExp As Object
-    Set RegExp = CreateObject("VBScript.RegExp")
-    RegExp.pattern = pattern
-    RegExp.Global = globalRegex
-    RegExp.ignoreCase = ignoreCase
-    RegExp.multiLine = multiLine
-    Set getRegExp = RegExp
+    Set getRegExp = CreateObject("VBScript.RegExp")
+    getRegExp.pattern = pattern
+    getRegExp.Global = globalRegex
+    getRegExp.ignoreCase = ignoreCase
+    getRegExp.multiLine = multiLine
 End Function
 
 '''
@@ -35,6 +33,7 @@ End Function
 Public Function testRegex(ByVal originaltext As String, ByVal pattern As String, Optional ByVal ignoreCase As Boolean = False) As Boolean
     Dim RegExp As Object: Set RegExp = getRegExp(pattern, ignoreCase, True, True)
     testRegex = RegExp.test(originaltext)
+    set RegExp = Nothing
 End Function
 
 '''
@@ -43,6 +42,7 @@ End Function
 Public Function replaceOneWithRegex(ByVal originaltext As String, ByVal searchedPattern As String, ByVal replacement As String, Optional ByVal ignoreCase As Boolean = False) As String
     Dim RegExp As Object: Set RegExp = getRegExp(searchedPattern, ignoreCase, False, True)
     replaceOneWithRegex = RegExp.Replace(originaltext, replacement)
+    Set RegExp = Nothing
 End Function
 
 '''
@@ -51,6 +51,7 @@ End Function
 Public Function replaceWithRegex(ByVal originaltext As String, ByVal searchedPattern As String, ByVal replacement As String, Optional ByVal ignoreCase As Boolean = False) As String
     Dim RegExp As Object: Set RegExp = getRegExp(searchedPattern, ignoreCase, True, True)
     replaceWithRegex = RegExp.Replace(originaltext, replacement)
+    Set RegExp = Nothing
 End Function
 
 '''
@@ -77,4 +78,5 @@ Public Function executeRegex(ByVal originaltext As String, ByVal pattern As Stri
         
     result = Strings.Left(result, Strings.Len(result) - Strings.Len(SEPARATOR))
     executeRegex = Strings.Split(result, SEPARATOR)
+    Set RegExp = Nothing
 End Function
