@@ -115,6 +115,24 @@ Public Function getExtension(ByVal filePath As String) As String
 End Function
 
 '''
+' Saves a text content into a file.
+'''
+Public Function saveTextFile(ByVal filePath As String, ByVal content As String, Optional charset As String = "utf-8") As Boolean
+    If fileExists(filePath) Then
+        Err.Raise 1, , "File " & filePath & " already exists."
+    End If
+    
+    Dim ADODB As Object: Set ADODB = CreateObject("ADODB.Stream")
+    ADODB.Type = 2 'Write.
+    ADODB.charset = "utf-8"
+    ADODB.Open
+    ADODB.WriteText content
+    ADODB.SaveToFile filePath, 2
+    Set ADODB = Nothing
+    saveTextFile = True
+End Function
+
+'''
 '   Deletes a file.
 '''
 Public Function deleteFile(ByVal filePath As String) As Boolean
