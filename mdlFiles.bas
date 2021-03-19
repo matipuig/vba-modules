@@ -124,7 +124,7 @@ Public Function saveTextFile(ByVal filePath As String, ByVal content As String, 
     
     Dim ADODB As Object: Set ADODB = CreateObject("ADODB.Stream")
     ADODB.Type = 2 'Write.
-    ADODB.charset = "utf-8"
+    ADODB.charset = charset
     ADODB.Open
     ADODB.WriteText content
     ADODB.SaveToFile filePath, 2
