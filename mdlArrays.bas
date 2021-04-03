@@ -87,3 +87,13 @@ Public Function searchInArray(ByVal sourceArray, ByVal searchedValue As String, 
         DoEvents
     Next element
 End Function
+
+'''
+' Converts an array to a collection.
+'''
+Public Function arrayToCollection(ByVal arr As String) As Collection
+    Set arrayToCollection = New Collection
+    For Each item In arr
+        arrayToCollection.Add item
+    Next item
+End Function

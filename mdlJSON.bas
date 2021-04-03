@@ -3,6 +3,15 @@ Option Explicit
 Const QUOTES As String = """"
 Const ESCAPED_QUOTES As String = "\" & QUOTES
 
+'
+' PARSING FUNCTION EXTRACTED FROM:
+' https://medium.com/swlh/excel-vba-parse-json-easily-c2213f4d8e7a
+'
+
+' Parsing variables.
+Private p&, token, dic
+
+
 '''
 '   Converts the specified received thing in a JSON string.
 '''
@@ -23,9 +32,27 @@ Public Function stringify(ByRef something As Variant) As String
     End If
 End Function
 
+
 '''
+' Parses the JSON.
+'''
+Function parse(json$, Optional key$ = "obj") As Object
+    p = 1
+    token = Tokenize(json)
+    Set dic = CreateObject("Scripting.Dictionary")
+    If token(p) = "{" Then ParseObj key Else ParseArr key
+    Set ParseJSON = dic
+End Function
+
+'''
+'
 '   PRIVATE FUNCTIONS
+'
 '''
+
+'
+' STRINGIFYING
+'
 
 '''
 '   Converts an array to JSON.
@@ -129,4 +156,80 @@ End Function
 Private Function escapeString(ByVal text As String) As String
     Dim escapedString As String: escapedString = Replace(text, QUOTES, ESCAPED_QUOTES)
     escapeString = QUOTES & escapedString & QUOTES
+End Function
+
+'
+'
+' PARSING
+' READ HERE:  https://medium.com/swlh/excel-vba-parse-json-easily-c2213f4d8e7a
+'
+
+Private Function ParseObj(key$)
+    Do: p = p + 1
+        Select Case token(p)
+            Case "]"
+            Case "[":  ParseArr key
+            Case "{":  ParseObj key
+            Case "{"
+                       If token(p + 1) = "}" Then
+                           p = p + 1
+                           dic.Add key, "null"
+                       Else
+                           ParseObj key
+                       End If
+                
+            Case "}":  key = ReducePath(key): Exit Do
+            Case ":":  key = key & "." & token(p - 1)
+            Case ",":  key = ReducePath(key)
+            Case Else: If token(p + 1) <> ":" Then dic.Add key, token(p)
+        End Select
+    Loop
+End Function
+
+Private Function ParseArr(key$)
+    Dim e&
+    Do: p = p + 1
+        Select Case token(p)
+            Case "}"
+            Case "{":  ParseObj key & ArrayID(e)
+            Case "[":  ParseArr key
+            Case "]":  Exit Do
+            Case ":":  key = key & ArrayID(e)
+            Case ",":  e = e + 1
+            Case Else: dic.Add key & ArrayID(e), token(p)
+        End Select
+    Loop
+End Function
+
+Private Function Tokenize(s$)
+    Const Pattern = """(([^""\\]|\\.)*)""|[+\-]?(?:0|[1-9]\d*)(?:\.\d*)?(?:[eE][+\-]?\d+)?|\w+|[^\s""']+?"
+    Tokenize = RExtract(s, Pattern, True)
+End Function
+
+Private Function RExtract(s$, Pattern, Optional bGroup1Bias As Boolean, Optional bGlobal As Boolean = True)
+  Dim c&, m, n, v
+  With CreateObject("vbscript.regexp")
+    .Global = bGlobal
+    .MultiLine = False
+    .IgnoreCase = True
+    .Pattern = Pattern
+    If .TEST(s) Then
+      Set m = .Execute(s)
+      ReDim v(1 To m.Count)
+      For Each n In m
+        c = c + 1
+        v(c) = n.value
+        If bGroup1Bias Then If Len(n.submatches(0)) Or n.value = """""" Then v(c) = n.submatches(0)
+      Next
+    End If
+  End With
+  RExtract = v
+End Function
+
+Private Function ArrayID$(e)
+    ArrayID = "(" & e & ")"
+End Function
+
+Private Function ReducePath$(key$)
+    If InStr(key, ".") Then ReducePath = Left(key, InStrRev(key, ".") - 1) Else ReducePath = key
 End Function

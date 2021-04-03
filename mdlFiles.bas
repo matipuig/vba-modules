@@ -45,6 +45,20 @@ Public Function folderExists(ByVal folder As String) As Boolean
 End Function
 
 '''
+' Creates a folder if it doesn't exist.
+'''
+Public Function makeDir(ByVal folderPath As String) As Boolean
+    If folderExists(folderPath) Then
+        folderCreate = True
+        Exit Function
+    End If
+    Dim FSO As Object: Set FSO = getFSO
+    FSO.createfolder folderPath
+    folderCreate = True
+    Set FSO = Nothing
+End Function
+
+'''
 '   Returns if the file exists.
 '''
 Public Function fileExists(ByVal file As String) As Boolean
