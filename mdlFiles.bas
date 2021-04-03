@@ -49,12 +49,12 @@ End Function
 '''
 Public Function makeDir(ByVal folderPath As String) As Boolean
     If folderExists(folderPath) Then
-        folderCreate = True
+        makeDir = True
         Exit Function
     End If
     Dim FSO As Object: Set FSO = getFSO
     FSO.createfolder folderPath
-    folderCreate = True
+    makeDir = True
     Set FSO = Nothing
 End Function
 
