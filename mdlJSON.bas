@@ -41,7 +41,7 @@ Function parse(json$, Optional key$ = "obj") As Object
     token = Tokenize(json)
     Set dic = CreateObject("Scripting.Dictionary")
     If token(p) = "{" Then ParseObj key Else ParseArr key
-    Set ParseJSON = dic
+    Set parse = dic
 End Function
 
 '''
