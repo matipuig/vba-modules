@@ -60,6 +60,38 @@ Public Function searchInColumn(ByRef xlSheet As Object, ByVal searchedValue As S
 End Function
 
 '''
+'   Looks for a specific content in an entire column, looking one by one without using Excel Search.
+'   Returns the row number if it finds it, or -1.
+'''
+Public Function searchInColumnSequential(ByRef xlSheet As Object, ByVal searchedValue As String, ByVal column As Long, ByVal startingRow As Long, ByVal endingRow As Long, Optional ByVal matchCase As Boolean = False) As Long
+    If startingRow > endingRow Then
+        Err.Raise 1, , "Ending row must be higher than starting row"
+    End If
+    
+    If Not matchCase Then
+        searchedValue = Strings.LCase(searchedValue)
+    End If
+    
+    Dim I As Long
+    Dim tmpCellValue As String
+    For I = startingRow To endingRow
+        tmpCellValue = xlSheet.Cells(I, column).value
+        If Not matchCase Then
+            tmpCellValue = Strings.LCase(tmpCellValue)
+        End If
+        If tmpCellValue = searchedValue Then
+            searchInColumnSequential = I
+            Exit Function
+        End If
+        If I Mod 10 = 0 Then
+            DoEvents
+        End If
+    Next I
+    
+    searchInColumnSequential = -1
+End Function
+
+'''
 '   Looks for a specific content in an entire row.
 '   Returns the column number if it finds it, or -1.
 '''
