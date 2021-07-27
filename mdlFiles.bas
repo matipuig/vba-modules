@@ -112,6 +112,7 @@ Public Function getFiles(ByVal dirPath As String, Optional ByVal withSubdirs As 
 
     For Each file In srcDir.Files
         allFiles.Add file.Path, ""
+        DoEvents
     Next file
     
     If withSubdirs = True Then
