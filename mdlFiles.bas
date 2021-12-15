@@ -68,6 +68,37 @@ Public Function fileExists(ByVal file As String) As Boolean
 End Function
 
 '''
+'   Returns an array with all folders in folder.
+'''
+Public Function getFolders(ByVal dirPath As String, Optional ByVal withSubdirs As Boolean = False)
+    Dim FSO As Object: Set FSO = getFSO
+    Dim srcDir As Object: Set srcDir = FSO.getFolder(dirPath)
+    Dim allDirs As Object: Set allDirs = CreateObject("Scripting.Dictionary")
+    Dim subdir As Object
+    Dim subdirDirs
+    Dim subdirDir
+   
+    For Each subdir In srcDir.subfolders
+        allDirs.Add subdir, ""
+        If withSubdirs = True Then
+            subdirDirs = getFolders(subdir.Path, True)
+            If Information.IsEmpty(subdirDirs) Then GoTo nextSubdir
+            For Each subdirDir In subdirDirs
+                allDirs.Add subdirDir, ""
+            Next subdirDir
+        End If
+nextSubdir:
+        DoEvents
+    Next subdir
+    
+    getFolders = allDirs.keys
+    Set subdir = Nothing
+    Set srcDir = Nothing
+    Set FSO = Nothing
+    Set allDirs = Nothing
+End Function
+
+'''
 '   Returns an array with all files in folder.
 '''
 Public Function getFiles(ByVal dirPath As String, Optional ByVal withSubdirs As Boolean = False)
@@ -81,12 +112,13 @@ Public Function getFiles(ByVal dirPath As String, Optional ByVal withSubdirs As 
 
     For Each file In srcDir.Files
         allFiles.Add file.Path, ""
+        DoEvents
     Next file
     
     If withSubdirs = True Then
         For Each subdir In srcDir.Subfolders
             subdirFiles = getFiles(subdir.Path, True)
-            If IsEmpty(subdirFiles) Then GoTo nextSubdir
+            If Information.IsEmpty(subdirFiles) Then GoTo nextSubdir
             For Each subdirFile In subdirFiles
                 allFiles.Add subdirFile, ""
             Next subdirFile
