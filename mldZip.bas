@@ -2,6 +2,11 @@ Attribute VB_Name = "vbaZip"
 Option Explicit
 
 '''
+' VBA-MODULES:
+' Contains the necessary methods to create zip files, and insert and extract contents from them.
+'''
+
+'''
 ' Creates a zip file.
 '''
 Public Function createZipFile(ByVal zipPath As String) As Boolean
@@ -44,6 +49,11 @@ Public Function extractInto(ByVal zipFilePath As Variant, ByVal targetDirectory 
     extractInto = True
 End Function
 
+'''
+' 
+' PRIVATE METHODS
+'
+'''
 
 '''
 ' Throws an error if the zip file does not exist.
