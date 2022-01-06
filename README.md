@@ -22,6 +22,7 @@ Just press "Import" in the VBA IDE and add this file. It will be imported with t
 | mdlStrings      | It has some methods to search case insensitive in strings and execute regex. |
 | mdlUtils        | It has some methods like get an array number or wait.                        |
 | mdlWord         | It lets you interact with some methods in Word Apps.                         |
+| mdlZip          | It lets you zip and unzip files into zip files.                              |
 
 ## Example
 
