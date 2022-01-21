@@ -1,4 +1,4 @@
-Attribute VB_Name = "vbaZip"
+Attribute VB_Name = "mdlZip"
 Option Explicit
 
 '''
