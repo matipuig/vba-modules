@@ -17,6 +17,33 @@ Public Function hasSubtext(ByVal originaltext As String, ByVal searchedSubtext A
 End Function
 
 '''
+' Returns a string keeping only the specified chars in the string.
+' For example "0123456789" to only keep numbers.
+'''
+Public Function keepChars(ByVal text As String, Optional ByVal charsToKeep As String = "01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz. ") As String
+    Dim I As Integer
+    For I = 1 To Len(text)
+        If InStr(1, charsToKeep, Mid(text, I, 1)) Then
+            keepChars = keepChars & Mid(text, I, 1)
+        End If
+    Next I
+End Function
+
+'''
+' Returns a string omitting the specified chars in the string.
+' For example "0123456789" to remove numbers.
+'''
+Public Function omitChars(ByVal text As String, Optional ByVal charsToOmit As String = "0123456789") As String
+    Dim I As Integer
+    For I = 1 To Len(text)
+        If Not InStr(1, charsToOmit, Mid(text, I, 1)) Then
+            omitChars = omitChars & Mid(text, I, 1)
+        End If
+    Next I
+End Function
+
+
+'''
 '   Get RegExp object.
 '''
 Public Function getRegExp(ByVal pattern As String, ByVal ignoreCase As Boolean, ByVal globalRegex As Boolean, ByVal multiLine As Boolean) As Object
